@@ -1,0 +1,1041 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Documentation for VMFormValidator</title>
+</head>
+<body>
+<h1>VMFormValidator - Form Validation Using MooTools</h1>
+
+<a name="contents" class="smoothscroll"><h2>Contents</h2></a>
+
+<ul>
+	<li><a href="#demos">Demos</a></li>
+	<li><a href="#description">Description</a></li>
+	<li><a href="#license">License</a></li>
+	<li><a href="#features">Features</a></li>
+	<li><a href="#dependencies">Dependencies</a></li>
+	<li><a href="#tutorial">A Quick Tutorial</a></li>	
+	<li><a href="#documentation">Documentation</a></li>
+</ul>
+
+<a name="demos" class="smoothscroll"><h2>Demos</h2></a>
+
+<ul>
+	<li><a href="">Sample user registration</a></li>
+	<li><a href="">Error messages above the form</a></li>
+	<li><a href="">Error messages above the input</a></li>
+	<li><a href="">Error messages below the input</a></li>
+	<li><a href="">Intelligent radios (cross-browser)</a></li>
+	<li><a href="">Multiple forms</a></li>
+</ul>
+
+<a name="description" class="smoothscroll"><h2>Description</h2></a>
+
+<p>VMFormValidator is a JavaScript form validation script based on MooTools 1.2. It aims to provide simple, reliable validation for all form element types across all browsers in an unobtrusive manner. It is 100% styled by CSS and allows for custom validations and error messages. Error messages can be displayed above the form, above each input, or below each input. VMFormValidator should not be used as a replacement for server-side validation (using PHP, .NET, etc) because JavaScript can be disabled.</p>
+
+<a name="license" class="smoothscroll"><h2>License</h2></a>
+
+<p>VMFormValidator is released under the open-source <a href="http://www.opensource.org/licenses/mit-license.php" rel="nofollow">MIT License</a>.</p>
+
+<a name="features" class="smoothscroll"><h2>Features</h2></a>
+
+<ul>
+	<li>Simple out of the box</li>
+	<li>Unobtrusive - requires no changes to existing (X)HTML markup</li>
+	<li>Degrades gracefully</li>
+	<li>Cross browser - tested in Internet Explorer 6 & 7, Firefox 2 & 3, Safari, Opera, and Google Chrome Beta</li>
+	<li>Validates every type of form element</li>
+	<li>Customizable styling - 100% CSS styling. The label and form element both have error and success states and the error list can also be styled</li>
+	<li>Customizable errors - each error can be customized with your error message text</li>
+	<li>Customizable error positioning - errors can appear above each form element or below it</li>
+	<li>Multiple validations per element - validations are fired in expected order in all browsers including Internet Explorer</li>
+	<li>Multiple forms can be validated per page</li>
+	<li>Validates on blur and on submit with the option to turn either off</li>
+	<li>Optional disabling of the submit button on error</li>
+	<li>Intelligent cross-browser radio button validation - no false errors</li>
+	<li>Includes the most common validations including required fields, email, password, url, dates-25 validations in total</li>
+	<li>Custom regex validation - you can enter your own regex for the script to evaluate</li>
+	<li>Custom functions - include custom functions to be run with onblur/onsubmit validation</li>
+	<li>19kb uncompressed, 9kb compressed</li>
+</ul>
+
+<a name="dependencies" class="smoothscroll"><h2>Dependencies</h2></a>
+
+<p>VMFormValidator requires the <a href="http://mootools.net" rel="nofollow">MooTools JavaScript framework</a>. Specifically, it requires the complete <a href="http://mootools.net/core" rel="nofollow">MooTools Core</a> (but not <a href="http://mootools.net/more" rel="nofollow">MooTools More</a>) file.</p>
+
+<a name="tutorial" class="smoothscroll"><h2>A Quick Tutorial</h2></a>
+
+<p>Let's build a quick registration form and validate it. VMFormValidator requires the MooTools library, so we'll need to download the entire <a href="http://mootools.net/core" rel="nofollow">MooTools 1.2 Core file</a>. Go download it quickly if you don't already have it. Don't forget to download a copy of VMFormValidator as well.</p>
+
+<p>If you're new to JavaScript (or MooTools), you'll find the implementation of VMFormValidator fairly easy. It's important to note that VMFormValidator has only two requirements for the form: 1) the form must have an id; 2) the form must use labels. Other than that, you're free to style the form however you like. We'll start with constructing our HTML form. For this basic registration form, we're only going to use 4 fields: username, password, passwordConfirm, and email.</p>
+
+<pre class="html">
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;<br />&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;<br />&lt;head&gt;<br />&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=iso-8859-1&quot; /&gt;<br />&lt;title&gt;VMFormValidatorTutorial&lt;/title&gt;<br />&lt;/head&gt;
+
+&lt;body&gt;
+	&lt;form id="registration" method="post" action=""&gt;
+		&lt;label for=&quot;username&quot;&gt;Username&lt;/label&gt;
+		&lt;input id="username" name="username" type=&quot;text&quot; /&gt;
+		&lt;label for=&quot;password&quot;&gt;Password&lt;/label&gt;
+		&lt;input id=&quot;password&quot; name=&quot;password&quot; type=&quot;password&quot; /&gt;
+		&lt;label for=&quot;confirmPassword&quot;&gt;Confirm Password&lt;/label&gt;
+		&lt;input id=&quot;confirmPassword&quot; name=&quot;confirmPassword&quot; type=&quot;password&quot; /&gt;
+		&lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+		&lt;input id=&quot;email&quot; name=&quot;email&quot; type=&quot;text&quot; /&gt;
+		&lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;
+	&lt;/form&gt;
+&lt;/body&gt;<br />&lt;/html&gt;
+</pre>
+
+<p>That was pretty easy, right? Let's go ahead and add just a little CSS styling to make our form look better (though we won't go overboard). For this tutorial, we're just going to put it in the head of our XHTML document, but in practice we recommend putting in your stylesheet in a separate file.</p>
+
+<pre class="css">
+&lt;style type=&quot;text/css&quot;&gt;
+	input, label, .errorList {float:left; clear:left;}
+&lt;/style&gt;
+</pre>
+
+<p>Next we need to add our JavaScript files, MooTools1.2-core.js and VMFormValidator1.0.js. We'll put those in the document head as well.</p>
+
+<pre class="html">
+&lt;script type=&quot;text/javascript&quot; src=&quot;mootools-1.2-core.js&quot;&gt;&lt;/script&gt;<br />&lt;script src=&quot;VMFormValidator1.0.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</pre>
+
+<p>Now we need to add a little bit of MooTools specific JavaScript. MooTools has a special event called 'domready' that executes whenever the HTML has finished loading. Most MooTools scripts are at least partially executed from within the 'domready' event. Again, we're just going to put this code in the document head, but it could also be in its own file.</p>
+
+<pre class="html">
+&lt;script type=&quot;text/javascript&quot;&gt;
+	window.addEvent('domready', function(){
+		//Our validation code will go here
+	});
+&lt;/script&gt;
+</pre>
+
+<p>All of our validation code is going to be inserted into the 'domready' event, right where the comment currently is. The first thing we'll need to do is initialize the VMFormValidator class. In this case, we'll use the variable <em>form</em>, but you can use <em>register</em>, or <em>form1</em>, or whatever you like. We'll set <em>form</em> equal to a new instance of VMFormValidator. Because the constructor for the VMFormValidator class has one required argument, the form id, we're going to enter in our form id of 'registration', surrounded in quotes to make it a string.</p>
+
+<pre class="html">
+&lt;script type=&quot;text/javascript&quot;&gt;
+	window.addEvent('domready', function(){
+		var form = new VMFormValidator('registration');
+	});
+&lt;/script&gt;
+</pre>
+
+<p>The constructor for VMFormValidator also has an optional argument for options, but we'll cover that a little later. Next, we're going make all of our form fields required. To do that, we'll use VMFormValidator's <em><a href="#required">required</a></em> method. The <em>required</em> method has one required argument, the field name we want to be required, and one optional argument, the error. Almost every method has a default error that it displays, but we can customize it if we want. We'll customize it only for the username and password fields.</p>
+
+<pre class="js">
+&lt;script type=&quot;text/javascript&quot;&gt;
+	window.addEvent('domready', function(){
+		var form = new VMFormValidator('registration');
+		form.required('username', 'Please enter a username.'); //Custom error
+		form.required('password', 'Please enter a password.'); //Custom error
+		form.required('confirmPassword'); //Default error
+		form.required('email');	//Default error			
+	});
+&lt;/script&gt;
+</pre>
+
+<p>Go ahead and try out your script now. It should be validating for each field, with an error message appearing below each input element if you don't type in it. If there are any problems, check to make sure that the paths to your javascript files are correct and that each one of the arguments entered above are in string format. While we're on the subject of arguments, if you look closely at the documentation, you'll see that VMFormValidator uses 3 other kinds of arguments: boolean (which is either true or false), integer (a whole number), and object (usually in an array format).</p>
+
+<p>Let's add a few more validations to our form. For the <em>username</em> field, we'll add <a href="#alphanumeric">alphanumeric</a> and <a href="#range">range</a>. For the <em>password</em> field, we'll add <a href="#noMatches">noMatches</a> and <a href="#password">password</a>. For <em>confirmPassword</em>, we'll add <a href="#matches">matches</a>, and for <em>email</em>, we'll add <a href="#email">email</a>.</p>
+
+<pre class="js">
+&lt;script type=&quot;text/javascript&quot;&gt;
+	window.addEvent('domready', function(){
+		var form = new VMFormValidator('registration');
+		form.required('username', 'Please enter a username.'); //Custom error
+		form.alphanumeric('username'); //Default error
+		form.range('username', 4, 10) //Default error
+		form.required('password', 'Please enter a password.'); //Custom error
+		form.noMatches('password', 'username', 'The password and username cannot be the same.'); //Custom Error
+		form.password('password'); //Default error
+		form.required('confirmPassword'); //Default error
+		form.matches('confirmPassword', 'password', 'Passwords must match.'); //Custom error
+		form.required('email');	//Default error
+		form.email('email'); //Default error			
+	});
+&lt;/script&gt;
+</pre>
+
+<p>That's all there is to it! Try your form again and try to sneak past it (without disabling JavaScript). We could stop there, but I'll show you just a few more things VMFormValidator can do.</p>
+
+<p>Like I mentioned earlier, VMFormValidator has options. The default CSS class names VMFormValidator uses are <em>.successLabel</em>, <em>.successElement</em>, <em>.errorLabel</em>, <em>.errorElement</em>, <em>.errorList</em>, and <em>.errorListItem</em>. Let's add a little more style to our form by adding to our CSS:</p>
+
+<pre class="js">
+&lt;style type=&quot;text/css&quot;&gt;
+	input, label, .errorList {float:left; clear:left;}
+	.successLabel {color:#006600;}
+	.successElement {border:#006600 1px solid;}
+	.errorLabel, .errorListItem {color:#FF0000;}
+	.errorElement {border:#FF0000 1px solid;}	
+&lt;/style&gt;
+</pre>
+
+<p>If you don't like the class names VMFormValidator uses, you can change them by specifying them in the class constructor. To do that, we're going to use our optional argument for the VMFormValidator contructor method. Because the optional argument accepts more than one option, we need to enclose it in an object. That simply means we'll put curly braces {} around our entire set of options. Each option has two parts: the option name and its value, which are separated by a colon. If you have more than one option, each option should be separated by a comma, except the last one. Sound complicated? It's actually easier than it sounds. Let's take a look at an example:
+
+<pre class="js">
+&lt;script type=&quot;text/javascript&quot;&gt;
+	window.addEvent('domready', function(){
+		var form = new VMFormValidator('registration', {
+			disableSubmit: false,
+			errorDisplay: 'aboveForm'
+		});
+		form.required('username', 'Please enter a username.'); //Custom error
+		form.alphanumeric('username'); //Default error
+		form.range('username', 4, 10) //Default error
+		form.required('password', 'Please enter a password.'); //Custom error
+		form.noMatches('password', 'username', 'The password and username cannot be the same.'); //Custom Error
+		form.password('password'); //Default error
+		form.required('confirmPassword'); //Default error
+		form.matches('confirmPassword', 'password', 'Passwords must match.'); //Custom error
+		form.required('email');	//Default error
+		form.email('email'); //Default error			
+	});
+&lt;/script&gt;
+</pre>
+
+<p>The above code tells VMFormValidator that the submit button should not be disabled if there is an error and that all errors should be displayed above the form. The CSS classes can be specified in the same way if you don't like the defaults. For a full list of options, see the <a href="#constructor">constructor</a> method.</p>
+
+<p>With that, our tutorial draws to a close. If you want to dig deeper into VMFormValidator, the documentation below provides examples for each method, along with the method syntax and argument types. I hope VMFormValidator will be a worthy solution for your forms. If you encounter a bug, have a question or comment, feel free to contact us. If you liked VMFormValidator, tell someone else about it. Thanks, and enjoy!</p>
+
+<a name="documentation" class="smoothscroll">
+<h2>Documentation</h2></a>
+
+<a name="VMFormValidator" class="smoothscroll"><h2>Class: VMFormValidator</h2></a>
+
+<p>This class is for validating forms.</p> 
+
+<h3>Implements:</h3>
+
+<ul>
+	<li><a href="http://docs.mootools.net/Class/Class.Extras#Events" rel="nofollow">Events</a>, <a href="http://docs.mootools.net/Class/Class.Extras#Options" rel="nofollow">Options</a>
+</ul>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li><a href="http://www.w3.org/TR/html401/interact/forms.html#h-17.9" rel="nofollow">According to the W3C</a>, the 'for' attribute for a label should refer to a form element's id, <em><strong>not</strong></em> the element's name. A good practice is to give your form elements an id that matches their names. This will ensure that your markup validates, while also reducing any chances of confusion in regards to a naming schema.</li>
+</ul>
+
+<a name="constructor" class="smoothscroll"><h2>VMFormValidator Method: constructor</h2></a>
+
+<p>VMFormValidator is completely unobtrusive and requires no changes to existing markup, provided the form has an id and uses labels.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+var form = new VMFormValidator(formId[, options]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>formId - (<em>string</em>) The id of the form on which validation should be performed.</li>
+	<li>options - (<em>object</em>, optional) Any of the options below.</li>
+</ol>
+
+<h4>Options:</h4>
+
+<ul>
+	<li>disableSubmit - (<em>boolean</em>, defaults to true) Disable the submit button on validation failure.</li>
+	<li>errorDisplay - (<em>string</em>, defaults to 'belowInput') Where the errors are displayed. Acceptable values are: 'aboveInput', 'belowInput', and 'aboveForm'.</li>
+	<li>errorListClass - (<em>string</em>, defaults to 'errorList') Class for the error display list.</li>
+	<li>errorListItemClass - (<em>string</em>, defaults to 'errorListItem') Class for each error display list item.</li>
+	<li>errorElement - (<em>string</em>, defaults to 'errorElement') Class for the form element when an error is detected.</li>
+	<li>errorLabel - (<em>string</em>, defaults to 'errorLabel') Class for the form element label when an error is detected.</li>
+	<li>labelDisplay - (<em>string</em>, defaults to 'before') Where the label is in relation to the form element in the HTML: 'before', 'after'.</li>
+	<li>successElementClass - (<em>string</em>, defaults to 'successElement') Class for the input box when validation succeeds.</li>
+	<li>successLabelClass - (<em>string</em>, defaults to 'successLabel') Class for the input label when validation succeeds.</li>
+	<li>validateOnBlur - (<em>boolean</em>, defaults to 'true') Validate each form element on blur.</li>
+	<li>validateOnSubmit - (<em>boolean</em>, defaults to 'true') Validate each form element on submit.</li>		
+</ul>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+});
+</pre>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li>Any form using VMFormValidator <em>must</em> have an id and labels <em>must</em> be used for all form elements that are validated.</li>
+	<li>VMFormValidator must be placed within the 'domready' event.</li>
+	<li>For multiple forms, you must use multiple instances of the class.</li>
+	<li>When using multiple forms, take care that no form elements share the same name or the errors will not appear in the second form.</li>
+</ul>
+
+<a name="addFunction" class="smoothscroll"><h2>VMFormValidator Method: addFunction</h2></a>
+
+<p>Adds a custom function to the onBlur and onSubmit events, to be run with the rest of the validations.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.addFunction(name, customFunction);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the custom function should be applied.</li>
+	<li>customFunction - (<em>string</em>) The function which should be applied for both onBlur and onSubmit events (if they are enabled) for the form element. The <em>customFunction</em> must be in string format because it is later executed using eval.</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+var custom_function = function(){
+	alert('This is a custom function');
+}
+
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.addFunction('firstName', 'custom_function()');
+});
+</pre>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li>The custom function should be defined outside the 'domready' event.</li>
+</ul>
+
+<a name="alpha" class="smoothscroll"><h2>VMFormValidator Method: alpha</h2></a>
+
+<p>Validates alphabetic characters.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.alpha(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field may contain only letters."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.alpha('firstName'); //Default error
+	form.alpha('lastName', 'Please enter only letters for your last name'); //Custom error
+});
+</pre>
+
+<a name="alphanumeric" class="smoothscroll"><h2>VMFormValidator Method: alphanumeric</h2></a>
+
+<p>Validates alphanumeric characters.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.alphanumeric(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field may contain only letters or numbers."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.alphanumeric('code'); //Default error
+	form.alphanumeric('code', 'Code can contain only letters or numbers.'); //Custom error
+});
+</pre>
+
+<a name="canadaPostal" class="smoothscroll"><h2>VMFormValidator Method: canadaPostal</h2></a>
+
+<p>Validates Canadian Postal codes.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.canadaPostal(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid Canadian Postal Code."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.canadaPostal('postal'); //Default error
+	form.canadaPostal('postal', 'You don't really live in Canada, do you?'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#usZip">usZip</a></li>
+</ul>
+
+<a name="credit" class="smoothscroll"><h2>VMFormValidator Method: credit</h2></a>
+
+<p>Validates all major credit card types including Visa, Mastercard, American Express, and Discover.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.credit(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid credit card number."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.credit('credit'); //Default error
+	form.credit('credit', 'That must have been your library card number. Try again.'); //Custom error
+});
+</pre>
+
+<a name="dateMDY" class="smoothscroll"><h2>VMFormValidator Method: dateMDY</h2></a>
+
+<p>Validates a date in Month/Day/Year format. Accepts spaces, hyphens, forward slashes, or periods as seperators.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.dateMDY(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid date in M/D/Y format."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.dateMDY('date'); //Default error
+	form.dateMDY('date', 'Not a prune. A date.'); //Custom error
+});
+</pre>
+
+<a name="dateYMD" class="smoothscroll"><h2>VMFormValidator Method: dateYMD</h2></a>
+
+<p>Validates a date in Year/Month/Day format. Accepts spaces, hyphens, forward slashes, or periods as seperators.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.dateYMD(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid date in Y/M/D format."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.dateYMD('date'); //Default error
+	form.dateYMD('date', 'If I have to pay, it isn't a real date.'); //Custom error
+});
+</pre>
+
+<a name="email" class="smoothscroll"><h2>VMFormValidator Method: email</h2></a>
+
+<p>Validates most email addresses.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.email(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid email address."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.email('email'); //Default error
+	form.email('email', 'Did you want me to guess your email address?.'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#url">url</a></li>
+</ul>
+
+<a name="excludes" class="smoothscroll"><h2>VMFormValidator Method: excludes</h2></a>
+
+<p>Will return an error if any of the array values are present.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.excludes(name, arrayCheck[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>arrayCheck - (<em>array</em>) Values that should return an error if they are present.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field cannot contain any of the following values: arrayCheck[]."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.excludes('spam', ['get rich quick', 'affiliate', 'millions']); //Default error
+	form.excludes('spam', ['lottery', 'Nigeria', 'dead relative'], 'So sorry, we already made our millions.'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#includes">includes</a></li>
+</ul>
+
+<a name="imageFile" class="smoothscroll"><h2>VMFormValidator Method: imageFile</h2></a>
+
+<p>Validate a file upload input to see if the file is an image.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.imageFile(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please upload a valid image file. Valid files end with one of the following extensions: .jpg, .jpeg, .bmp, .gif, .png."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.imageFile('photo'); //Default error
+	form.imageFile('photo', 'Photos only, please. With a signature, they're only $10 apiece.'); //Custom error
+});
+</pre>
+
+<a name="includes" class="smoothscroll"><h2>VMFormValidator Method: includes</h2></a>
+
+<p>Will return an error if any of the array values are not present.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.includes(name, arrayCheck[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>arrayCheck - (<em>array</em>) Values that should return an error if one or more are not present.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field did not contain any of the following values: arrayCheck[]."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.includes('comments', ['I love Virtuosi Media', 'thank you', 'biggest fan']); //Default error
+	form.includes('comments', ['I love Virtuosi Media', 'thank you', 'biggest fan'], 'Don't you love us?'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#excludes">excludes</a></li>
+</ul>
+
+<a name="matches" class="smoothscroll"><h2>VMFormValidator Method: matches</h2></a>
+
+<p>Compares the values of two fields and returns an error if they do not match. Useful for confirming a password.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.matches(name, compareName[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>compareName - (<em>string</em>) The name of the form element which <em>name</em> should match.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field does not match the <em>compareName</em> field."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.matches('password', 'confirmPassword'); //Default error
+	form.matches('password', 'confirmPassword', 'Forget already? Not a good sign...'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#noMatches">noMatches</a></li>
+</ul>
+
+<a name="maxLength" class="smoothscroll"><h2>VMFormValidator Method: maxLength</h2></a>
+
+<p>Sets a maximum length for a field.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.maxLength(name, maxLength[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>maxLength - (<em>integer</em>) The maximum number of characters to be entered into the form element.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field may contain no more than <em>maxLength</em> characters."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.maxLength('name', 50); //Default error
+	form.maxLength('name', 50, 'Helloooo Hemingway.'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#minLength">minLength</a>, <a href="#range">range</a></li>
+</ul>
+
+<a name="minLength" class="smoothscroll"><h2>VMFormValidator Method: minLength</h2></a>
+
+<p>Sets a minimum length for a field.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.minLength(name, minLength[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>minLength - (<em>integer</em>) The minimum number of characters to be entered into the form element.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field must contain at least <em>minLength</em> characters."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.minLength('name', 4); //Default error
+	form.minLength('name', 4, "Stingy, aren't we? Type at least four characters, please."); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#maxLength">maxLength</a>, <a href="#range">range</a></li>
+</ul>
+
+<a name="noMatches" class="smoothscroll"><h2>VMFormValidator Method: noMatches</h2></a>
+
+<p>Compares the values of two fields and returns an error if they match. Useful making sure a password doesn't match a username.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.noMatches(name, compareName[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>compareName - (<em>string</em>) The name of the form element which <em>name</em> cannot match.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field cannot match the <em>compareName</em> field."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.noMatches('password', 'username'); //Default error
+	form.noMatches('password', 'username', "That's like asking to be hacked."); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#matches">matches</a></li>
+</ul>
+
+<a name="numeric" class="smoothscroll"><h2>VMFormValidator Method: numeric</h2></a>
+
+<p>Validate if a form element's value is numeric.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.numeric(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field may contain only numbers."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.numeric('page'); //Default error
+	form.numeric('page', "I can always count on you to type something you're not supposed to. Please enter only numbers."); //Custom error
+});
+</pre>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li><em>numeric</em> checks only for numbers; periods and commas will cause an error.</li>
+</ul>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#alphanumeric">alphanumeric</a></li>
+</ul>
+
+<a name="password" class="smoothscroll"><h2>VMFormValidator Method: password</h2></a>
+
+<p>Validates a password of at least one lowercase letter, one uppercase letter, and one number. The password must be at least 6 characters long.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.password(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Your password must contain one lowercase letter, one uppercase letter, one number, and be at least 6 characters long."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.password('password'); //Default error
+	form.password('password', "That's probably your cat's name, isn't it? Try something a little harder to crack."); //Custom error
+});
+</pre>
+
+<a name="phone" class="smoothscroll"><h2>VMFormValidator Method: phone</h2></a>
+
+<p>Validates a North American phone number, with the area code required. Allows for optional spaces, hyphens, or periods as separators and parentheses for the area code. A leading one or zero is also optional.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.phone(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid phone number including area code."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.phone('phone'); //Default error
+	form.phone('phone', "Please? We promise we won't call."); //Custom error
+});
+</pre>
+
+<a name="range" class="smoothscroll"><h2>VMFormValidator Method: range</h2></a>
+
+<p>Sets a minimum length for a field.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.range(name, minLength, maxLength[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>minLength - (<em>integer</em>) The minimum number of characters to be entered into the form element.</li>
+	<li>maxLength - (<em>integer</em>) The maximum number of characters to be entered into the form element.</li>	
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field must contain at least <em>minLength</em> and no more than <em>maxLength</em> characters."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.range('password', 4, 10); //Default error
+	form.range('password', 4, 10, "Let's compromise. Not too long. Not too short."); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#maxLength">maxLength</a>, <a href="#minLength">minLength</a></li>
+</ul>
+
+<a name="required" class="smoothscroll"><h2>VMFormValidator Method: required</h2></a>
+
+<p>Makes any form element required.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.required(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "This field is required."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.required('creditCard'); //Default error
+	form.required('creditCard', "Payment is required."); //Custom error
+});
+</pre>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li>Radio buttons are a special case in form validation because the tab index works differently across browsers. Internet Explorer, Safari, and Google Chrome will tab through only the first radio in a series, while Firefox and Opera will tab through each radio. VMFormValidator handles the cross browser validation for radios, ensuring that no false errors will be produced when the tab index hasn't finished cycling through a radio series in Firefox and Opera.</li>
+</ul>
+
+<a name="swearFilter" class="smoothscroll"><h2>VMFormValidator Method: swearFilter</h2></a>
+
+<p>Triggers an error if a common swear word is present in a form element.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.swearFilter(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please refrain from using profanity."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.swearFilter('comments'); //Default error
+	form.swearFilter('comments', "That wasn't a very nice thing to say."); //Custom error
+});
+</pre>
+
+<h3>Notes:</h3>
+
+<ul>
+	<li>For a more comprehensive swear filter, use the <a href="#excludes">excludes</a> method to define your own set of words.</li>
+</ul>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#excludes">excludes</a></li>
+</ul>
+
+<a name="url" class="smoothscroll"><h2>VMFormValidator Method: url</h2></a>
+
+<p>Validates most URLs.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.url(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid URL."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.url('website'); //Default error
+	form.url('website', "What part of 404 don't you understand?"); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#email">email</a></li>
+</ul>
+
+<a name="usZip" class="smoothscroll"><h2>VMFormValidator Method: usZip</h2></a>
+
+<p>Validates US ZIP codes. The four digit ZIP code extension is optional.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.usZip(name[, error]);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>, optional) The error message to be displayed on validation failure. Default message: "Please enter a valid US ZIP Code."</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.usZip('zip'); //Default error
+	form.usZip('zip', 'Bonus points if you can enter a correct ZIP code AND tell me what ZIP stands for.'); //Custom error
+});
+</pre>
+
+<h3>See also:</h3>
+
+<ul>
+	<li><a href="#canadaPostal">canadaPostal</a></li>
+</ul>
+
+<a name="validateRegEx" class="smoothscroll"><h2>VMFormValidator Method: validateRegEx</h2></a>
+
+<p>Validates a custom regular expression.</p>
+
+<h3>Syntax:</h3>
+
+<pre class="js">
+form.validateRegEx(regex, name, error);
+</pre>
+
+<h3>Arguments:</h3>
+
+<ol>
+	<li>regex - (<em>string</em>) A regex to evaluated.</li>
+	<li>name - (<em>string</em>) The name of the form element to which the validation should be applied.</li>
+	<li>error - (<em>string</em>) The error message to be displayed on validation failure. There is <em><strong>no</strong></em> default message.</li>
+</ol>
+
+<h3>Example:</h3>
+
+<pre class="js">
+window.addEvent('domready', function(){
+	var form = new VMFormValidator('exampleForm');
+	form.validateRegEx('mootools', 'favorite', "You must type 'MooTools.'"); 
+});
+</pre>
+
+<h3>Further JavaScript Regular Expression Resources:</h3>
+
+<ul>
+	<li><a href="http://www.regular-expressions.info/javascript.html" rel="nofollow">http://www.regular-expressions.info/javascript.html</a> - Specifics of writing regular expressions for JavaScript.</li>
+	<li><a href="http://regexlib.com/" rel="nofollow">http://regexlib.com/</a> - A regular expression library. Be sure to check out their cheat sheet.</li>
+</ul>
+
+</body>
+</html>
