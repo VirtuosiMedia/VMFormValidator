@@ -19,8 +19,9 @@ var VMFormValidator = new Class({
 	Implements: [Events, Options],
 
 	options: {
-		disableSubmit: true,					//Disable the submit button on failure
+		disableSubmit: true,					//Disable the submit button on failure, default true
 		errorDisplay: 'aboveInput',				//Where the errors are displayed: 'aboveInput', 'belowInput', 'aboveForm'
+		errorDisplayMultiple: false,			//Display multiple errors at a time; defaults false
 		errorListClass: 'errorList',			//Class for the error display list
 		errorListItemClass: 'errorListItem',	//Class for the error display list item
 		errorElement: 'errorElement',			//Class for the input box when an error is detected 
@@ -28,17 +29,18 @@ var VMFormValidator = new Class({
 		labelDisplay: 'before',					//Where the label is in relation to the form element in the HTML: 'before', 'after'
 		successElementClass: 'successElement',	//Class for the input box when validation succeeds
 		successLabelClass: 'successLabel',		//Class for the input label when validation succeeds
-		validateOnBlur: true,					//Validate each form element on blur
-		validateOnSubmit: true					//Validate each form element on submit
+		validateOnBlur: true,					//Validate each form element on blur, defaults true
+		validateOnSubmit: true					//Validate each form element on submit, defaults true
 	},
 
 	initialize: function(formId, options){
-		this.setOptions(options);		
+		this.setOptions(options);
 		this.form = formId;
-		this.formElements = new Hash;
+		this.formElements = {};
+		this.errorListIds = [];
 		if (this.options.validateOnSubmit == true){
 			$(this.form).addEvent('submit', function(e){
-					this.executeAllValidators(e);
+					this.executeAllValidators.bind(this, e);
 					if (this.options.errorDisplay == 'aboveForm'){
 						var numberErrors = $(this.form+'ErrorList').getElements('li[class='+this.options.errorListItemClass+']');
 					} else {
@@ -47,53 +49,44 @@ var VMFormValidator = new Class({
 					if (numberErrors.length != 0){ return false; }
 				}.bind(this));
 		}
-		this.buildFormElementArray($(this.form), this.formElements, this);		
+		this.buildFormElementArray($(this.form), this.formElements, this);			
 	},
 
 	//Validations are stored in an array because Internet Explorer fires events in a random order
 	buildFormElementArray: function(form, formElements, validator){
-		var formTextArray = form.getElements('input[type=text]');
-		var formPasswordArray = form.getElements('input[type=password]');
-		var formRadioArray = form.getElements('input[type=radio]');
-		var formCheckboxArray = form.getElements('input[type=checkbox]');
-		var formFileArray = form.getElements('input[type=file]');
-		var formTextareaArray = form.getElements('textarea');
-		var formSelectArray = form.getElements('select');
-		var formElementsArray = [formTextArray, formPasswordArray, formCheckboxArray, formFileArray, formTextareaArray, formSelectArray, formRadioArray].clean();
-	
+		var formElementsArray = form.getElements('input[type="text"], input[type="password"], input[type="checkbox"], input[type="radio"], textarea, select').clean();
 		formElementsArray.each(function(item){
-			item.each(function(item){
-				var elementName = item.getProperty('name');
-				element = new Hash({
-					elName: elementName,								   
-					validators:	new Hash()
+			var elementName = item.getProperty('name');
+
+			element = {
+				elName: elementName,								   
+				validators:	{}
+			};
+			if (validator.options.validateOnBlur == true) {
+				item.addEvent('blur', function(event){
+					validator.executeValidators(elementName, event, this);
 				});
-				if (validator.options.validateOnBlur == true) {
-					item.addEvent('blur', function(event){
-						validator.executeValidators(elementName, event, this);
-					});
-				}
-				formElements[elementName] = element;
-			});
-		});
+			}
+			this.formElements[elementName] = element;
+		}, this);
 	},
 	
 	setValidator: function(elementName, validatorName, vFunction, error){
-		this.formElements[elementName]['validators'][validatorName] = new Hash({
+		this.formElements[elementName]['validators'][validatorName] = {
 			validatorFunction: vFunction,
 			validatorError: error
-		});
+		};
 	},
 
 	executeValidators: function(elementName, event, eventType){
-		this.formElements[elementName]['validators'].each(function(index){
+		Object.each(this.formElements[elementName]['validators'], function(index){
 			eval(index.validatorFunction); //Is there any way NOT to use eval here? Let me know
 		}, this);
 	},
 
 	executeAllValidators: function(e){
 		this.formElements.each(function(item){
-			this.executeValidators(item.elName, e, 'submit');
+			this.executeValidators.bind(this, item.elName, e, 'submit');
 		}.bind(this));
 	},
 
@@ -101,6 +94,7 @@ var VMFormValidator = new Class({
 		var errorString = error.capitalize();
 		errorString = errorString.replace(/[^a-zA-Z0-9]+/g,'');
 		var errorId = name + errorString;
+		this.errorListIds.push(name);
 		return errorId;
 	},
 	
@@ -164,12 +158,8 @@ var VMFormValidator = new Class({
 	},
 	
 	enableSubmit: function(){ 
-		if (this.options.disableSubmit == true){
-			var numberErrors = $(this.form).getElements('li[class='+this.options.errorListItemClass+']');
-			if (numberErrors.length == 0){
-				var submitButton = $(this.form).getElements('[type=submit]');
-				submitButton.removeProperty('disabled'); 
-			}
+		if ((this.options.disableSubmit == true)&&($(this.form).getElements('li[class='+this.options.errorListItemClass+']').length == 0)){
+			$(this.form).getElements('[type=submit]').removeProperty('disabled'); 
 		}
 	},
 	
@@ -182,9 +172,8 @@ var VMFormValidator = new Class({
 	}, 
 	
 	error: function(name, element, label, error){ //Public function
-
 		var errorId = this.createErrorId(name, error);
-
+		
 		var errorMessage = new Element('li', {
 			'id': errorId,									   
 			'class': this.options.errorListItemClass,
@@ -202,16 +191,14 @@ var VMFormValidator = new Class({
 			var errorListId = formId + 'ErrorList';
 
 			if ($(errorListId)) { //If the errorList already exists
-				var errorList = $(errorListId);	
+				var errorList = $(errorListId);
 			} else {
 				var errorList = this.createErrorList(formId);
 				errorList.inject(formId, 'before');
 			}
-
 		} else if (this.options.errorDisplay == 'aboveInput'){ //inject the error above the input and the label
-
 			if ($(name+'ErrorList') != null) { //If the errorList already exists
-				var errorList = $(name+'ErrorList');	
+				var errorList = $(name+'ErrorList');
 			} else {
 				var errorList = this.createErrorList(name);
 				
@@ -221,9 +208,7 @@ var VMFormValidator = new Class({
 					errorList.inject(element, 'before');
 				}
 			}
-
 		} else if (this.options.errorDisplay == 'belowInput'){ //inject the error below the input and the label
-
 			if ($(name+'ErrorList') != null) { //If the errorList already exists
 				var errorList = $(name+'ErrorList');
 			} else {
@@ -237,12 +222,14 @@ var VMFormValidator = new Class({
 			}
 		}
 
-		if (!$(errorId)){ errorMessage.inject(errorList); }
+		var injectError = true;
+		if (!this.options.errorDisplayMultiple){
+			injectError = (this.errorListIds.splice(0, this.errorListIds.length - 1).contains(name)) ? false : true;
+		} 
+		if ((!$(errorId))&&(injectError)){ errorMessage.inject(errorList); }
 
-		//Disable the submit button
 		if (this.options.disableSubmit == true){
-			var submitButton = $(this.form).getElements('[type=submit]');
-			submitButton.setProperty('disabled', 'true');
+			$(this.form).getElements('[type=submit]').setProperty('disabled', 'true');
 		}
 	},//End error
 	
