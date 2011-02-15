@@ -37,17 +37,19 @@ var VMFormValidator = new Class({
 		this.setOptions(options);
 		this.form = formId;
 		this.formElements = {};
-		this.errorListIds = [];
+		this.errorListIds = {};
 		if (this.options.validateOnSubmit == true){
+			var t = this;
 			$(this.form).addEvent('submit', function(e){
-					this.executeAllValidators.bind(this, e);
-					if (this.options.errorDisplay == 'aboveForm'){
-						var numberErrors = $(this.form+'ErrorList').getElements('li[class='+this.options.errorListItemClass+']');
-					} else {
-						var numberErrors = $(this.form).getElements('li[class='+this.options.errorListItemClass+']');
-					}
-					if (numberErrors.length != 0){ return false; }
-				}.bind(this));
+				t.executeAllValidators(e);
+				
+				if (t.options.errorDisplay == 'aboveForm'){
+					var numberErrors = $(t.form+'ErrorList').getElements('li[class='+t.options.errorListItemClass+']');
+				} else {
+					var numberErrors = $(t.form).getElements('li[class='+t.options.errorListItemClass+']');
+				}
+				if (numberErrors.length != 0){ return false; }
+			});
 		}
 		this.buildFormElementArray($(this.form), this.formElements, this);			
 	},
@@ -68,6 +70,7 @@ var VMFormValidator = new Class({
 				});
 			}
 			this.formElements[elementName] = element;
+			this.errorListIds[elementName] = [];
 		}, this);
 	},
 	
@@ -85,16 +88,16 @@ var VMFormValidator = new Class({
 	},
 
 	executeAllValidators: function(e){
-		this.formElements.each(function(item){
-			this.executeValidators.bind(this, item.elName, e, 'submit');
-		}.bind(this));
+		Object.each(this.formElements, function(item){ 
+			this.executeValidators(item.elName, e, 'submit');
+		}, this);
 	},
 
 	createErrorId: function(name, error){ 
 		var errorString = error.capitalize();
 		errorString = errorString.replace(/[^a-zA-Z0-9]+/g,'');
 		var errorId = name + errorString;
-		this.errorListIds.push(name);
+		this.errorListIds[name].push(error);
 		return errorId;
 	},
 	
@@ -115,6 +118,7 @@ var VMFormValidator = new Class({
 				errorListElements.each(function(el){
 					if (el.getProperty('id') == errorId) { //If the error matches the validation error, destroy it
 						el.destroy();
+						
 					}
 				});
 				this.destroyErrorList(errorList, name, element, label);
@@ -154,7 +158,7 @@ var VMFormValidator = new Class({
 		if (label.hasClass(this.options.errorLabel)) { label.removeClass(this.options.errorLabel); }
 
 		label.addClass(this.options.successLabelClass);
-		element.addClass(this.options.successElementClass);	
+		element.addClass(this.options.successElementClass);
 	},
 	
 	enableSubmit: function(){ 
@@ -167,7 +171,8 @@ var VMFormValidator = new Class({
 		var errorId = this.createErrorId(name, error);
 		var errorList = $(name+'ErrorList');
 		if (this.options.errorDisplay == 'aboveForm'){ errorList = $(this.form+'ErrorList'); }
-
+		
+		this.errorListIds[name] = [];
 		this.checkErrorList(errorList, errorId, name, element, label, error);
 	}, 
 	
@@ -187,14 +192,11 @@ var VMFormValidator = new Class({
 		element.addClass(this.options.errorElement);
 
 		if (this.options.errorDisplay == 'aboveForm'){ //Inject the error list above the form
-			var formId = this.form;
-			var errorListId = formId + 'ErrorList';
-
-			if ($(errorListId)) { //If the errorList already exists
-				var errorList = $(errorListId);
+			if ($(this.form + 'ErrorList')) { //If the errorList already exists
+				var errorList = $(this.form + 'ErrorList');
 			} else {
-				var errorList = this.createErrorList(formId);
-				errorList.inject(formId, 'before');
+				var errorList = this.createErrorList(this.form);
+				errorList.inject(this.form, 'before');
 			}
 		} else if (this.options.errorDisplay == 'aboveInput'){ //inject the error above the input and the label
 			if ($(name+'ErrorList') != null) { //If the errorList already exists
@@ -223,8 +225,11 @@ var VMFormValidator = new Class({
 		}
 
 		var injectError = true;
+		
+		this.formElements[name]['passed']
+		                                       
 		if (!this.options.errorDisplayMultiple){
-			injectError = (this.errorListIds.splice(0, this.errorListIds.length - 1).contains(name)) ? false : true;
+			injectError = (this.errorListIds[name].length == 1) ? true : false;
 		} 
 		if ((!$(errorId))&&(injectError)){ errorMessage.inject(errorList); }
 
@@ -234,11 +239,7 @@ var VMFormValidator = new Class({
 	},//End error
 	
 	checkValid: function(valid, name, element, label, error){ 
-		if (valid == true) { 
-			this.success(name, element, label, error);
-		} else if (valid == false) {
-			this.error(name, element, label, error);
-		}		
+		(valid) ? this.success(name, element, label, error) : this.error(name, element, label, error);
 	},
 
 	internalRegEx: function(regex, name, error){ 
@@ -277,7 +278,7 @@ var VMFormValidator = new Class({
 			var checked;
 			element.each(function(item, index){
 				if (item.checked){ checked = true; };
-				if ((eventType != 'submit') && ((Browser.Engine.gecko) || (Browser.Engine.presto))){
+				if ((eventType != 'submit') && ((Browser.firefox) || (Browser.opera))){
 					if (currentElement == element[lastElement]){
 						element.each(function(item){								  
 							if (item.checked){ checked = true; };
@@ -416,6 +417,7 @@ var VMFormValidator = new Class({
 	addFunction: function(name, customFunction){
 		this.setValidator(name, customFunction, customFunction);
 	},
+	
 	//Any or all the following methods are common shortcuts that are based on the essential methods above
 	alpha: function(name, error){
 		if (!error){ error = "This field may contain only letters."; }
