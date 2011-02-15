@@ -51,6 +51,7 @@
 	<li>Customizable errors - each error can be customized with your error message text</li>
 	<li>Customizable error positioning - errors can appear above each form element or below it</li>
 	<li>Multiple validations per element - validations are fired in expected order in all browsers including Internet Explorer</li>
+	<li>Display either one or multiple errors per element at a time</li>
 	<li>Multiple forms can be validated per page</li>
 	<li>Validates on blur and on submit with the option to turn either off</li>
 	<li>Optional disabling of the submit button on error</li>
@@ -241,6 +242,7 @@ var form = new VMFormValidator(formId[, options]);
 <ul>
 	<li>disableSubmit - (<em>boolean</em>, defaults to true) Disable the submit button on validation failure.</li>
 	<li>errorDisplay - (<em>string</em>, defaults to 'belowInput') Where the errors are displayed. Acceptable values are: 'aboveInput', 'belowInput', and 'aboveForm'.</li>
+	<li>errorDisplayMultiple - (<em>boolean</em>, defaults to false) Display multiple errors at a time per element</li>
 	<li>errorListClass - (<em>string</em>, defaults to 'errorList') Class for the error display list.</li>
 	<li>errorListItemClass - (<em>string</em>, defaults to 'errorListItem') Class for each error display list item.</li>
 	<li>errorElement - (<em>string</em>, defaults to 'errorElement') Class for the form element when an error is detected.</li>
