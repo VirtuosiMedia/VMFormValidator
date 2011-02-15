@@ -1,0 +1,23 @@
+/*General Layout*/
+body {#EEE;}
+fieldset {border:1px solid; border-color:#EEE #666 #666 #EEE; margin:20px; padding:0px 0px 20px; height:370px; width:240px; border-radius:12px; -moz-border-radius:12px; -webkit-border-radius:12px; background:#EEE; background:-moz-linear-gradient(100% 100% 90deg, #CCC, #EEE); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EEE), to(#CCC)); box-shadow:1px 1px 3px #777; -moz-box-shadow:1px 1px 3px #777; -webkit-box-shadow:1px 1px 3px #777; position:relative;}
+legend {font-weight:bold; font-size:20px; margin:0px; width:200px; padding:10px 0px; text-align:center; background:#CCC; background:-moz-linear-gradient(100% 100% 90deg, #CCC, #EEE); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#EEE), to(#CCC)); color:#333; text-shadow:1px 1px 0 #FFF; border:1px solid; border-color:#666 #FFF #FFF #666; border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px; position:absolute; top:20px; left:20px;}
+#formContent {margin-top:70px;}
+label, input {float:left; clear:left; margin:6px 0px 0px 20px; font-size:16px;}
+label {font-weight:bold; margin-top:10px; text-shadow:1px 1px 0 #FFF; color:#333;}
+input {width:200px; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; border:1px solid; border-color:#333 #CCC #CCC #333; box-shadow:inset 2px 2px 5px #CCC; -moz-box-shadow:inset 2px 2px 5px #CCC; -webkit-box-shadow:inset 2px 2px 5px #CCC; outline:none;}
+#submit {background:#09F; background:-moz-linear-gradient(100% 100% 90deg, #06C, #09F); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#09F), to(#06C)); color:#FFF; border:1px solid; border-color:#09F #06C #06C #09F; border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px; padding:6px; margin-top:20px; text-shadow:1px 1px 0 #09F; box-shadow:1px 1px 3px #555; -moz-box-shadow:1px 1px 3px #555; -webkit-box-shadow:1px 1px 3px #555;}
+#submit:hover {background:#06C; background:-moz-linear-gradient(100% 100% 90deg, #09F, #06C); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#06C), to(#09F)); cursor:pointer; box-shadow:1px 1px 1px #999; -moz-box-shadow:1px 1px 1px #999; -webkit-box-shadow:1px 1px 1px #999;}
+
+/*Errors*/
+.errorList {float:left; clear:left; list-style:none; margin:0px; height:0px; position:relative; left:110px; top:4px;}
+.errorListItem {background:#FF6A6A; color:#FFF; float:left; clear:left; min-width:300px; width:auto; max-width:390px; list-style:none; margin:0px; padding:4px 8px; position:absolute; border:1px solid; border-color:#FCC #F33 #F33 #FCC; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px; text-shadow:-1px -1px 0 #F33; box-shadow:1px 1px 3px #555; -moz-box-shadow:1px 1px 3px #555; -webkit-box-shadow:1px 1px 3px #555;}
+.errorListItem:after {content:"\00a0"; display:block; position:absolute; top:15px; left:-15px; width:0px; height:0px; border-width:10px 0px 0px 20px; border-style:solid; border-color:#FF6A6A transparent;}
+.errorLabel {color:#F33;}
+.errorElement {border-color:#F33 #FCC #FCC #F33;}
+#submit[disabled] {background:#666; background:-moz-linear-gradient(100% 100% 90deg, #666, #999); background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#999), to(#666)); color:#FFF; border-color:#999 #666 #666 #999; text-shadow:1px 1px 0 #999;}
+#submit[disabled]:hover {box-shadow:1px 1px 3px #555; -moz-box-shadow:1px 1px 3px #555; -webkit-box-shadow:1px 1px 3px #555; cursor:default;}
+
+/*Success*/
+.successLabel {color:#390;}
+.successElement {border-color:#360 #390 #390 #360;}
