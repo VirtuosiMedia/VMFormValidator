@@ -2,5 +2,8 @@
  name: User Registration
  description: A user registration validation demo
  authors:
-   - Virtuosi Media
+   - Virtuosi Media  
+ resources:
+   - https://github.com/VirtuosiMedia/VMFormValidator/raw/master/Source/VMFormValidator.js
+ normalize_css: no
  ...
