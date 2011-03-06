@@ -56,7 +56,7 @@ var VMFormValidator = new Class({
 
 	//Validations are stored in an array because Internet Explorer fires events in a random order
 	buildFormElementArray: function(form, formElements, validator){
-		var formElementsArray = form.getElements('input[type="text"], input[type="password"], input[type="checkbox"], input[type="radio"], textarea, select').clean();
+		var formElementsArray = form.getElements('input[type="text"], input[type="password"], input[type="checkbox"], input[type="file"], input[type="radio"], textarea, select').clean();
 		formElementsArray.each(function(item){
 			var elementName = item.getProperty('name');
 
@@ -134,7 +134,7 @@ var VMFormValidator = new Class({
 	destroyErrorList: function(errorList, name, element, label){ //If the error list has no more children, destroy it
 		var errorCheck = errorList.getElements('li[class='+this.options.errorListItemClass+']');
 		if (this.options.errorDisplay == 'aboveForm'){
-			if (errorCheck.length == 0) { //If no more errors exist
+			if (errorCheck.length == 0) {
 				errorList.destroy();
 				this.inputSuccess(element, label);
 				this.enableSubmit();
@@ -145,7 +145,7 @@ var VMFormValidator = new Class({
 				}
 			}
 		} else {
-			if (errorCheck.length == 0) { //If no more errors exist
+			if (errorCheck.length == 0) {
 				errorList.destroy();
 				this.inputSuccess(element, label);
 				this.enableSubmit();
@@ -167,7 +167,7 @@ var VMFormValidator = new Class({
 		}
 	},
 	
-	success: function(name, element, label, error){ //Public function
+	success: function(name, element, label, error){
 		var errorId = this.createErrorId(name, error);
 		var errorList = $(name+'ErrorList');
 		if (this.options.errorDisplay == 'aboveForm'){ errorList = $(this.form+'ErrorList'); }
@@ -176,7 +176,7 @@ var VMFormValidator = new Class({
 		this.checkErrorList(errorList, errorId, name, element, label, error);
 	}, 
 	
-	error: function(name, element, label, error){ //Public function
+	error: function(name, element, label, error){
 		var errorId = this.createErrorId(name, error);
 		
 		var errorMessage = new Element('li', {
@@ -191,15 +191,15 @@ var VMFormValidator = new Class({
 		label.addClass(this.options.errorLabel);
 		element.addClass(this.options.errorElement);
 
-		if (this.options.errorDisplay == 'aboveForm'){ //Inject the error list above the form
-			if ($(this.form + 'ErrorList')) { //If the errorList already exists
+		if (this.options.errorDisplay == 'aboveForm'){
+			if ($(this.form + 'ErrorList')) { 
 				var errorList = $(this.form + 'ErrorList');
 			} else {
 				var errorList = this.createErrorList(this.form);
 				errorList.inject(this.form, 'before');
 			}
-		} else if (this.options.errorDisplay == 'aboveInput'){ //inject the error above the input and the label
-			if ($(name+'ErrorList') != null) { //If the errorList already exists
+		} else if (this.options.errorDisplay == 'aboveInput'){ 
+			if ($(name+'ErrorList') != null) { 
 				var errorList = $(name+'ErrorList');
 			} else {
 				var errorList = this.createErrorList(name);
@@ -210,8 +210,8 @@ var VMFormValidator = new Class({
 					errorList.inject(element, 'before');
 				}
 			}
-		} else if (this.options.errorDisplay == 'belowInput'){ //inject the error below the input and the label
-			if ($(name+'ErrorList') != null) { //If the errorList already exists
+		} else if (this.options.errorDisplay == 'belowInput'){
+			if ($(name+'ErrorList') != null) {
 				var errorList = $(name+'ErrorList');
 			} else {
 				var errorList = this.createErrorList(name);
@@ -256,43 +256,42 @@ var VMFormValidator = new Class({
 	internalChecked: function(name, error, e, eventType){ //Only for radio and checkbox elements
 		var element = $(this.form).getElement('[name='+name+']');
 		var label = $(this.form).getElement('label[for='+name+']');
-
+		var checked = false;
+		
 		if (element.get('type') == 'checkbox') {
-			var checked = false;
 			if (element.get('checked') == true){ checked = true; };
+			this.checkValid(checked, name, element, label, error);
 		} else {
-			/* Get the current element and detect event - Cross browser event detection and varied radio
+			var elements = $(this.form).getElements('[name='+name+']');
+			if ((eventType != 'submit') && ((Browser.firefox) || (Browser.opera))){
+				/* Get the current element and detect event - Cross browser event detection and varied radio
 				behavior make this entire block necessary - Special thanks to quirksmode for the syntax
-			*/
-			var currentElement;
-			if (!e) var e = window.event;
-			if (e.target) {
-				currentElement = e.target;
-			} else if (e.srcElement) { 
-				currentElement = e.srcElement;
-			}
-			if (currentElement.nodeType == 3) { currentElement = currentElement.parentNode; };
-
-			var element = $(this.form).getElements('[name='+name+']');
-			var lastElement = (element.length - 1);
-			var checked;
-			element.each(function(item, index){
-				if (item.checked){ checked = true; };
-				if ((eventType != 'submit') && ((Browser.firefox) || (Browser.opera))){
-					if (currentElement == element[lastElement]){
-						element.each(function(item){								  
-							if (item.checked){ checked = true; };
-						});
-						if (checked != true){ checked = false; };
-					}
-				} else {
-					if (checked != true){ checked = false; };
+				//*/
+				var currentElement;
+				if (!e) var e = window.event;
+				if (e.target) {
+					currentElement = e.target;
+				} else if (e.srcElement) { 
+					currentElement = e.srcElement;
 				}
-			});
-			element = element[lastElement]; //Reset
+				if (currentElement.nodeType == 3) { currentElement = currentElement.parentNode; };
+			
+				var currentVal = currentElement.value;
+				var lastVal = elements.getLast().get('value');
+				
+				if (currentVal == lastVal){
+					elements.each(function(item){								  
+						if (item.checked){ checked = true; };
+					});
+					this.checkValid(checked, name, currentElement, label, error);
+				}
+			} else {
+				elements.each(function(item){
+					if (item.checked){ checked = true; };
+				});
+				this.checkValid(checked, name, element, label, error);
+			}			
 		}
-
-		this.checkValid(checked, name, element, label, error);
 	},
 
 	internalLength: function(name, error, type, length1, length2){ 
