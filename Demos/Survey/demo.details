@@ -1,0 +1,9 @@
+---
+ name: Survey Form
+ description: A survey form validation demo
+ authors:
+   - Virtuosi Media  
+ resources:
+   - https://github.com/VirtuosiMedia/VMFormValidator/raw/master/Source/VMFormValidator.js
+ normalize_css: no
+ ...

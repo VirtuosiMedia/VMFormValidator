@@ -1,0 +1,20 @@
+<form id="survey" action="" method="post">
+	<fieldset>
+		<legend>Sample Survey Demo</legend>
+		<div id="formContent">
+			<label for="pizza">What is your favorite food?</label>
+			<input type="text" name="pizza" id="pizza" />
+			<label for="uploadPizza">Upload a picture of your favorite food.</label>
+			<input type="file" name="uploadPizza" id="uploadPizza" />
+			<label for="pizzaFrequency">How often could you eat your favorite food?</label>
+			<label class="radioLabel" for="pizzaFrequency"><input type="radio" name="pizzaFrequency" id="pizzaFrequency" value="1" />Once a day</label>
+			<label class="radioLabel" for="pizzaFrequency1"><input type="radio" name="pizzaFrequency" id="pizzaFrequency1" value="2" />Twice a day</label>
+			<label class="radioLabel" for="pizzaFrequency2"><input type="radio" name="pizzaFrequency" id="pizzaFrequency2" value="3" />Every meal</label>		
+			<div class="checkContainer">
+				<label for="likePizza" class="checkLabel">Check this box if you like pizza.</label>
+				<input type="checkbox" name="likePizza" id="likePizza" />
+			</div>
+			<input type="submit" id="submit" value="Submit Survey" />
+		</div>
+	</fieldset>
+</form>
