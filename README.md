@@ -2,7 +2,7 @@ VM Form Validator
 ===========
 
 VM Form Validator is a JavaScript form validation script based on MooTools 1.3. It aims to provide simple, reliable validation for all form element types across all browsers in an unobtrusive manner. It is 100% styled by CSS and allows for custom validations and error messages. Error messages can be displayed above the form, above each input, or below each input. VMFormValidator should not be used as a replacement for server-side validation (using PHP, .NET, etc) because JavaScript can be disabled.
-You can find a [full tutorial](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-tutorial), the full [API docs](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-api-documentation), and [demos](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-demos) at the [Virtuosi Media website](http://www.virtuosimedia.com/).
+You can find a [full tutorial](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-tutorial), the full [API docs](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-api-documentation), and [demos](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/vm-form-validator/vm-form-validator-demos) at the [Virtuosi Media website](http://www.virtuosimedia.com/). Also, be sure to check out the rest of our [MooTools plugins](http://www.virtuosimedia.com/dev/javascript/mootools-plugins/).
 
 ![Screenshot](https://github.com/VirtuosiMedia/VMFormValidator/raw/master/vm-form-validator.png)
 
